@@ -11,7 +11,7 @@ import type { Story } from "@/lib/types";
 type Spread = { kind: "cover" } | { kind: "dedication" } | { kind: "page"; i: number } | { kind: "end" };
 
 export default function Book() {
-  const { input, story, setStory, order } = useStore();
+  const { input, story, setStory, order, paid } = useStore();
   const nav = useNavigate();
   const [at, setAt] = useState(0);
   const [busy, setBusy] = useState<string | null>(null);
@@ -21,10 +21,10 @@ export default function Book() {
   const ref = useRef<Story | null>(story);
   ref.current = story;
 
-  useEffect(() => { if (!story || !order) nav("/preview"); }, [story, order, nav]);
+  useEffect(() => { if (!story || !order || !paid) nav("/preview"); }, [story, order, paid, nav]);
   // Draw any pages not drawn yet (pages after the free preview)
   useEffect(() => {
-    if (!story) return;
+    if (!story || !paid) return;
     let cancel = false;
     (async () => {
       for (let i = 0; i < story.pages.length; i++) {
@@ -40,7 +40,7 @@ export default function Book() {
     return () => { cancel = true; };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  if (!story) return null;
+  if (!story || !paid) return null;
 
   const spreads: Spread[] = [{ kind: "cover" }, { kind: "dedication" }, ...story.pages.map((_, i) => ({ kind: "page" as const, i })), { kind: "end" }];
   const cur = spreads[at];
@@ -55,7 +55,7 @@ export default function Book() {
   async function exportPdf() {
     setBusy("Building PDF…");
     try {
-      const doc = await buildPdf(ref.current!, input, size, order === "print");
+      const doc = await buildPdf(ref.current!, input, paid, size, order === "print");
       doc.save(`${ref.current!.title.replace(/[^a-z0-9]+/gi, "-")}.pdf`);
     } finally { setBusy(null); }
   }

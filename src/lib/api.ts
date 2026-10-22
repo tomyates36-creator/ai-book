@@ -13,9 +13,24 @@ function sb() {
 }
 const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
+/** supabase-js hides the function's JSON body behind a generic "non-2xx" message; dig the real one out of error.context (a Response). */
+async function describeError(error: { message: string; context?: unknown }): Promise<string> {
+  const res = error.context as Response | undefined;
+  if (res && typeof res === "object" && "status" in res) {
+    try {
+      const raw = await (typeof res.clone === "function" ? res.clone() : res).text();
+      let msg = raw;
+      try { const j = JSON.parse(raw); msg = j.error?.message ?? j.error ?? j.message ?? raw; if (typeof msg !== "string") msg = JSON.stringify(msg); } catch { /* not JSON */ }
+      return `${fnStatus(res.status)}${msg || error.message}`;
+    } catch { /* body already used */ }
+  }
+  return error.message;
+}
+const fnStatus = (s?: number) => (s ? `[${s}] ` : "");
+
 async function invoke<T>(fn: string, body: Record<string, unknown>): Promise<T> {
   const { data, error } = await sb().functions.invoke(fn, { body });
-  if (error) throw new Error(error.message);
+  if (error) throw new Error(await describeError(error));
   if ((data as { error?: string })?.error) throw new Error((data as { error: string }).error);
   return data as T;
 }

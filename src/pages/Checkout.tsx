@@ -14,7 +14,7 @@ import { useStore } from "@/lib/store";
 export default function Checkout() {
   const [q] = useSearchParams();
   const nav = useNavigate();
-  const { story, setOrder } = useStore();
+  const { story, setOrder, markPaid } = useStore();
   const product = PRODUCTS.find((p) => p.id === q.get("product")) ?? PRODUCTS[0];
   const shopUrl = (product.id === "digital" ? import.meta.env.VITE_SHOPIFY_DIGITAL_URL : import.meta.env.VITE_SHOPIFY_PRINT_URL) as string | undefined;
   return (
@@ -30,7 +30,7 @@ export default function Checkout() {
           {product.id === "print" && <> Printed books will be sent to a print partner (e.g. Gelato or Lulu) after payment — also not connected yet.</>}
         </div>
         {shopUrl ? <Button asChild size="lg" className="mt-5"><a href={shopUrl}>Pay with Shopify →</a></Button> : null}
-        <Button data-testid="simulate-paid" size="lg" variant="sun" className="mt-5" onClick={() => { setOrder(product.id); nav("/book"); }}>Demo: simulate a paid order →</Button>
+        <Button data-testid="simulate-paid" size="lg" variant="sun" className="mt-5" onClick={() => { setOrder(product.id); markPaid(); nav("/book"); }}>Demo: simulate a paid order →</Button>
       </section>
     </Shell>
   );

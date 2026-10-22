@@ -18,7 +18,11 @@ async function toJpeg(src: string, px = 1500): Promise<string> {
   return c.toDataURL("image/jpeg", 0.9);
 }
 
-export async function buildPdf(story: Story, input: StoryInput, size: PdfSize = "square", print = false): Promise<jsPDF> {
+export class UnpaidError extends Error { constructor() { super("The full PDF unlocks after payment."); } }
+
+/** Only ever called with paid === true; refuses otherwise so no unwatermarked file can exist pre-payment. */
+export async function buildPdf(story: Story, input: StoryInput, paid: boolean, size: PdfSize = "square", print = false): Promise<jsPDF> {
+  if (paid !== true) throw new UnpaidError();
   const [tw, th] = SIZES[size];
   const b = print ? BLEED : 0;
   const W = tw + b * 2, H = th + b * 2;

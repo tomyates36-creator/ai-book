@@ -21,4 +21,6 @@
   .flip-in { animation: flip .45s ease-out; transform-origin: left center; }
   @keyframes flip { from { transform: perspective(1200px) rotateY(-75deg); opacity: .3 } to { transform: perspective(1200px) rotateY(0); opacity: 1 } }
   .watermark { position:absolute; inset:0; display:grid; place-items:center; pointer-events:none; font-family:"Archivo Black"; font-size:2.2rem; color: rgb(255 255 255 / .55); text-shadow: 0 0 6px rgb(0 0 0 / .35); transform: rotate(-25deg); letter-spacing:.1em }
+  .wm-repeat { position:absolute; inset:0; pointer-events:none; background-repeat:repeat; background-size:220px 110px;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='110'><text x='10' y='70' transform='rotate(-25 110 55)' font-family='Arial Black,sans-serif' font-size='20' font-weight='900' fill='rgba(44,36,30,0.16)'>InkTales PREVIEW</text></svg>"); }
 }
