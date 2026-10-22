@@ -1,0 +1,7 @@
+project_id = "inktales"
+
+[functions.generate-story]
+verify_jwt = false
+
+[functions.generate-image]
+verify_jwt = false

@@ -1,0 +1,24 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body { @apply bg-paper font-body text-ink; }
+}
+@layer components {
+  .noise { background-image: radial-gradient(color-mix(in oklab, theme(colors.ink) 6%, transparent) 1px, transparent 1.4px); background-size: 6px 6px; }
+  .halo { text-shadow: 3px 3px 0 theme(colors.ink); }
+  .doodle { position: relative; }
+  .doodle::after { content: ""; border-bottom: 3px solid theme(colors.punch); border-radius: 50%; height: 7px; position: absolute; bottom: -3px; left: 0; right: 0; transform: rotate(-1deg); }
+  .btn-block { box-shadow: 5px 5px 0 theme(colors.ink); transition: transform .12s, box-shadow .12s; }
+  .btn-block:active { box-shadow: 1px 1px 0 theme(colors.ink); transform: translate(4px, 4px); }
+  .btn-block:disabled { opacity: .5; box-shadow: 2px 2px 0 theme(colors.ink); }
+  .card-block { border: 2px solid theme(colors.ink); box-shadow: 3px 3px 0 theme(colors.ink); }
+  .chip { @apply cursor-pointer select-none border-2 border-ink px-3 py-1.5 text-sm font-bold rounded-md bg-paper; }
+  .chip[data-on="true"] { @apply bg-ink text-paper; }
+  .field { @apply w-full border-2 border-ink bg-paper px-3 py-2.5 rounded-md font-semibold outline-none focus:bg-white; }
+  .label { @apply mb-1.5 block text-xs font-bold uppercase tracking-[0.15em]; }
+  .flip-in { animation: flip .45s ease-out; transform-origin: left center; }
+  @keyframes flip { from { transform: perspective(1200px) rotateY(-75deg); opacity: .3 } to { transform: perspective(1200px) rotateY(0); opacity: 1 } }
+  .watermark { position:absolute; inset:0; display:grid; place-items:center; pointer-events:none; font-family:"Archivo Black"; font-size:2.2rem; color: rgb(255 255 255 / .55); text-shadow: 0 0 6px rgb(0 0 0 / .35); transform: rotate(-25deg); letter-spacing:.1em }
+}
